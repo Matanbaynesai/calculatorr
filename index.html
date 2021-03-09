@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="calculator">
+        <div id="screen">
+            <span id="screen-content"></span>
+        </div>
+        <div id="main-body">
+            <div id="operator-buttons">
+                <button class="operator-button" onclick="setOperator('+')" id="btn-add">+</button>
+                <button class="operator-button" onclick="setOperator('-')" id="btn-minus">-</button>
+                <button class="operator-button" onclick="setOperator('*')" id="btn-multiply">x</button>
+                <button class="operator-button" onclick="setOperator('/')" id="btn-divide">÷</button>
+            </div>
+            <div id="numbers-body">
+                <div id="numbers-div">
+                    <button class="number-button" onclick="setCurrentNumber(7)" id="btn-7">7</button>
+                    <button class="number-button" onclick="setCurrentNumber(8)" id="btn-8">8</button>
+                    <button class="number-button" onclick="setCurrentNumber(9)" id="btn-9">9</button>
+                    <button class="number-button" onclick="setCurrentNumber(4)" id="btn-4">4</button>
+                    <button class="number-button" onclick="setCurrentNumber(5)" id="btn-5">5</button>
+                    <button class="number-button" onclick="setCurrentNumber(6)" id="btn-6">6</button>
+                    <button class="number-button" onclick="setCurrentNumber(1)" id="btn-1">1</button>
+                    <button class="number-button" onclick="setCurrentNumber(2)" id="btn-2">2</button>
+                    <button class="number-button" onclick="setCurrentNumber(3)" id="btn-3">3</button>
+                    <button class="number-button bottom-left-button" onclick="setCurrentNumber(0)" id="btn-0">0</button>
+                    <button class="number-button" onclick="setOperator('.')" id="btn-dot">.</button>
+                    <button class="number-button" onclick="clearAll()" id="btn-ac">AC</button>
+                </div>
+                <div id="equal-div">
+                    <button class="bottom-right-button" id="btn-equal" onclick="makeCalculation()">=</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let firstNumber = null;
+        let secondNumber = null;
+        let isSecondNumber = false;
+        let currentOperator = null;
+        let isDotClicked = false;
+        let currentResult = 0;
+
+        function outputToScreen(numberToShow) {
+            const screen = document.getElementById("screen-content");
+            screen.innerHTML = numberToShow;
+        }
+
+        function setCurrentNumber(number) {
+            if (currentOperator === null && !isDotClicked) {
+                if (firstNumber === null) { firstNumber = 0; }
+                firstNumber = parseInt(firstNumber.toString() + number.toString())
+                outputToScreen(firstNumber);
+            }
+            else {
+                if (isDotClicked) {
+                    if (isSecondNumber) {
+                        if (secondNumber.toString().split(".").length > 1) {
+                            secondNumber = parseFloat(secondNumber.toString().split(".")[0] + "." + secondNumber.toString().split(".")[1] + number);
+                        }
+                        else {
+                            secondNumber = parseFloat(secondNumber.toString().split(".")[0] + "." + number);
+                        }
+                        outputToScreen(secondNumber);
+                    }
+                    else {
+                        if (firstNumber === null) {
+                            firstNumber = 0;
+                        }
+                        if (firstNumber.toString().split(".").length > 1) {
+                            firstNumber = parseFloat(firstNumber.toString().split(".")[0] + "." + firstNumber.toString().split(".")[1] + number);
+                        }
+                        else {
+                            firstNumber = parseFloat(firstNumber.toString().split(".")[0] + "." + number);
+                        }
+                        outputToScreen(firstNumber);
+                    }
+                    return;
+                }
+                if (secondNumber === null) { secondNumber = 0; }
+                secondNumber = parseInt(secondNumber.toString() + number.toString())
+                outputToScreen(secondNumber);
+            }
+        }
+
+        function makeCalculation() {
+            switch (currentOperator) {
+                case "+":
+                    currentResult = firstNumber + secondNumber;
+                    break;
+                case "*":
+                    currentResult = firstNumber * secondNumber;
+                    break;
+                case "/":
+                    currentResult = firstNumber / secondNumber;
+                    break;
+                case "-":
+                    currentResult = firstNumber - secondNumber;
+                    break;
+            }
+            currentOperator = null;
+            secondNumber = null;
+            firstNumber = currentResult;
+            outputToScreen(currentResult)
+        }
+
+        function clearAll() {
+            firstNumber = null;
+            secondNumber = null;
+            currentOperator = null;
+            isSecondNumber = false;
+            currentResult = 0;
+            outputToScreen(0);
+        }
+
+        function setOperator(operator) {
+            if (operator === ".") {
+                isDotClicked = true;
+                return true;
+            }
+            isDotClicked = false;
+            currentOperator = operator;
+            isSecondNumber = true;
+        }
+
+        outputToScreen(0);
+    </script>
+</body>
+
+</html>
